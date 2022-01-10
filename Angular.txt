@@ -1,0 +1,444 @@
+https://code.visualstudio.com/docs/nodejs/angular-tutorial
+
+#install angular command line interface
+npm install -g @angular/cli
+
+#Creating new angular app
+ng new app_name
+or
+ng new app_name --style=css/scss --routing
+
+#To compile & run the app
+cd app_name
+ng serve
+#Opens the browser window automatically
+ng serve --open
+#Opens the browser window automatically on the mentioned port
+ng serve --open --port=5200
+
+#To open the code in VS Code
+cd app_name
+code .
+
+
+Why Node.js
+Servere side platform to build server side programs using Javascript lang
+Here , we will run our code using Angular CLi and angular CLi internally works with node.js 
+Angular CLI- detect changes, saves them, and then compile them with the help of node.js,also it uses node.js as a server
+angular/core, angular/compiler works with npm i.e node.js package manager which internally requires node.js
+
+
+Flow of Execution: All files compiled version are invoked at the time of execution
+
+index.html --> (Asper tags)main.ts compiled version is invoked  --> app.module.ts
+--> app.component.ts + app.component.html 
+
+
+All remaining component should be child components of app.component
+
+All code written in app.component.html will be ultimately loaded into the <app-root> tag
+So no need to write <html>,<body> tag in app.component.html
+<body>
+  <app-root></app-root>
+</body>
+
+
+
+#Installing packages and saving them in package.json
+Ex:- Packages required for Bootstrap
+npm install jquery --save
+npm install popper.js --save
+npm install bootstrap --save
+npm install font-awesome --save
+
+
+#angular.json
+Angular CLI reads angular.json while running the angular application
+So we can add any setting in angular.json
+EX: Styles and scripts section here we specifies the files which we want to load when the application is loaded
+The code in style.css is globaland accessible across whole code of the application
+
+#Chnages in angular.json
+ng server command not recognise the changes made in angular.json
+So we need to stop and run our angular application again
+
+
+##Angular Components
+Class that contains app data and event handler methods
+For every screen you need to create the component
+Ex: for dash page we rewuire dash component
+
+Component class containts app data in form of properties/array that is require to display the view
+Also it contains event handler methods to perform diff actions
+Every component has one template --> html page
+Template can access all the properties and event handler methods of that component
+EX: text box binds to personName property 
+	save button binds to save records event handler (function)
+A component can call other component through templates
+Comp additional details are called meta-data of components
+
+
+#Component hierarchy
+App Component --> root component
+Login Component --> Child component
+Each component can share their data to their connected component
+
+#Component metadata
+@Component -- annotation is used to denote a component class
+Ex:
+@Component({
+	selector: "login",    --url by which the component is called
+	templateUrl:"login.html",  -- template associated to that component
+	styleUrls:["login.css"]	-- stylesheet file/files associated to that component
+})
+
+@Component is imported from @angular/core package
+
+#Syntax to create a component
+ng g component Login
+
+4 files are created
+
+component.ts --> actual class defination
+component.spec.ts  --> unit test cases
+component.html  --> actual template
+component.css  --> style sheet
+
+
+
+#Angular Basic Routing
+#base URL
+<base href="/">
+This URL acts as a base, which can be prefixed to the actual route URLs.
+For example, if the base URL is "www.sample.com/other" URL, and the angular route URL is "dashboard",
+the full URL will be "www.sample.com/other/dashboard".
+
+#routerLink
+In the HTML <a> tag, by default, we can specify the path by using "href" attribute.
+In order to specify the angular route URL, instead of "href", you have to use "routerLink".
+Which means that, it is not a regular hyperlink, it is the hyperlink for angular routing.
+EX: <a routerLink="app-register" id="signup">Don't have account yet?</a>
+
+#Route Interface
+const routes: Routes = [
+  {path:"app-register",component:RegisterComponent},
+  {path:"",component:LoginComponent}
+];
+
+The "routes" is an "type alias", which really means, an array of Route interface.
+The "Route" interface defines properties such as "path" and "component" etc.
+Each route is of "Route" interface type.
+The "path" property represents the actual URL based on which, the route can be identified.
+The "component" property represents the component class, which component should be loaded, when the user is navigated to the specified route.
+
+#Router Outlet
+<router-outlet></router-outlet>
+create "router-outlet" tag in app.component.html, to represent the place where exactly the component's content needs to be reflected.
+
+
+
+#Intializing the class properties
+#ngOnInit()
+Used to init the properties of components
+Ex:
+export class Profile implements OnInit
+{
+	fname: string="";
+	lname: string="";
+	rollnum: number=0;
+	profiles: string[]=[];
+	employees: any=[] //Here datatype is set to any as here we 
+						are trying to store multiple object literals
+
+	
+	ngOnInit()
+	{
+		this.fname="Sanket";
+		this.lname="Deshmukh";
+		this.rollnum=00;
+		
+		
+	}
+
+}
+
+
+#Handling Error:Property has no initializer
+Property '…' has no initializer and is not definitely assigned in the constructor.
+In case if you get above error, add the following property in tsconfig.json, 
+which is present at root folder of your application:
+"strictPropertyInitialization": false
+
+
+#ngFor
+It reads data from an array
+Array name is case sensitive
+
+Syntax:
+
+<tag *ngFor="let varName of arrayName">
+
+</tag>
+
+Ex;-
+
+this.teamMembersSummary = [
+	{region:"East",Count:20,tempAvailableMembers:4},
+	{region:"South",Count:40,tempAvailableMembers:6},
+	{region:"West",Count:60,tempAvailableMembers:5}
+]
+
+{{abc}} ==> Interpolation binding
+[attr.atributeName] = "'cardBody'+i"    ==> Property Binding
+
+<select *ngFor="let teamMemberRegion of teamMembersSummary">
+	<option value=teamMemberRegion.region>{{teamMemberRegion.region}}</option>
+</select>
+
+
+#Component class
+Can perform unit testing on Component class
+Template code and Component class code can be developed individually
+
+#DataBindings
+Relationship between html ele. and Component properties
+value of html ele will be automatically updated into Component's property and vice versa
+
+4 types of data binding:
+
+1)Interpolation binding: {{ }}
+	Used to display a a property value in text format
+
+2)Property Binding: []
+	Used to assign a value of one property to another property
+
+3)Event Binding: ()
+	Used to call method when user perfoms any activity
+	Ex:
+	#In template file
+	<a href="#" onclick="return false" (click)="onProjectChange($event)">
+	
+	#In Component class
+	onProjectChange($event:any)
+	{
+		console.log($event.target.innerHTML);
+	}
+	
+4)Two way binding: [( )]
+	Read val of property, display same in textbox and when user modifies form 
+	element, then update it for same property
+
+
+
+#Dynamic Style and ngClass
+[style.property] = "value"
+[style.property] = "(condition)?truevalue:falsevalue"
+
+[ngClass] = "value"
+[ngClass] = "(condition)?truevalue:falsevalue"
+
+
+#ngIf
+If the condition satisfies only then the tag is displayed 
+<tag *ngIf="condition">
+</tag>
+
+
+#ngIf and else
+<tag *ngIf="condition; then firstTemplate; else secondTemplate">
+</tag>
+
+
+#ng-template
+Predefined angular template which can be user as per user requirement
+
+Ex: (firstTemplate is a template name which can be used to refer it further)
+<ng-template #firstTemplate>
+</ng-template>
+
+<ng-template #secondTemplate>
+</ng-template>
+
+
+#Built-in Pipes
+while using interpolation binding ,to convert the vvalue in required format we can use Pipes
+The pipe receives the value; convert the value and return the same that can be displayed in the HTML output.
+The pipe must be used with the pipe symbol, followed by the pipe name, inside the interpolation binding.
+{{property|uppercase}}
+The "uppercase" pipe is used to convert the value into uppercase.
+{{property|lowercase}}
+The "lowercase" pipe is used to convert the value into lowercase.
+{{property|slice: startindex:endindex }}
+The "slice" pipe is used to get a part of the string, starting from the start index up to the end index.
+{{property|number: .2}}
+The "number" pipe applies the digit grouping and also the decimal places.
+For example .2 adds two decimal places.
+{{property|currency:"USD"}}
+The "currency" pipe is used to specify the currency symbol based on the currency name.
+{{property|percent}}
+The "percent" pipe converts the given value into percentage.
+For example 0.6, will be converted as 60%.
+{{property|json}}
+The "json" pipe converts the JavaScript object into JSON format.
+
+
+#ng-switch
+ngSwitch is used to check a property value, and display 
+some content based on the value of the particular property.
+<tag [ng-switch]="property">
+	<tag *ngSwitchCase="value1">Content Here</tag>
+	<tag *ngSwitchCase="value2">Content Here</tag>
+	<tag *ngSwitchCase="value3">Content Here</tag>
+</tag>
+
+Ex:
+<span [ng-switch]="year">
+	<span *ngSwitchCase="2001" style="color:red;">Content Here</span>
+	<span *ngSwitchCase="2011" style="color:yellow;">Content Here</span>
+	<span *ngSwitchCase="2021" style="color:green;">Content Here</span>
+</span>
+
+
+
+
+
+#We need atleast one component called as app-root component and atleast one module called 
+app module alos known as root module to create a hello world application
+
+
+#Modules
+
+#Syntax
+ng g module_name
+Module is a collection of components, directives and pipes.
+Modules are used to organize the components, directives and pipes.
+Modules are mainly used to create meaningful groups of components that are related to a specific user,
+part of the project or achieve some particular goal.
+Ex:-
+For example you have created a set of components, such as LoginComponent, RegistrationComponent,
+MyProfileComponent that are related to user management.
+Since all these components are related to user account maintenance, you can create a module called "UserAccountModule",
+and add all these components as a part of that module.
+Module can contain directives and pipes also.
+predefined directives (ngIf, ngSwitch, ngFor, ngClass etc.,)
+predefined pipes (uppercase, lowercase, currency, date etc.)
+
+#Goal of Angular module (ngModule)
+Consolidate directives and pipes that are related to a specific user functionality or specific project module;
+and also make some of the components, directives, pipes as public.
+So that those public components, directives and pipes can be used by other module's components.
+
+A module can import another module
+In that case, a module imports the components, directives, 
+pipes that are already exported by the other module.
+
+Syntax:
+
+@ngModule({
+	declarations:[];
+	exports:[];
+	imports:[];
+	providers:[];
+})
+
+class ModuleName{
+
+}
+
+#The difference between JavaScript module and Angular module is:
+Javascript module is just a file. But Angular module is a class 
+that logically groups-up the components and others.
+
+#Module metadata
+Module metadata contains four important options:
+declarations, imports, exports and the providers.
+1)declarations
+The "declarations" option specifies the list of components, directives and pipes that are members of current module.
+2)exports
+The "exports" option specifies the list of components, directives and pipes that are being public and being exported to 
+other modules and that can be imported in other modules.
+If you don't export a component, it is private by default.It means it is only accessible within the same module
+3)imports
+The "imports" option specifies the list of other modules that you want to import.
+If a module imports other module, that module can access all the components, directives and pipes that are already exported by the other module.
+4)providers
+The "providers" option specifies the list of services that can be used by the components, directives and pipes that are members of the current module.
+5)bootstrap ****
+And only the root module i.e. AppModule, can contain an option called bootstrap.
+Here bootstrapping means, starting execution of the AppComponent and loading the output of AppComponent into the "app-root" tag, which is present at the index.html file.
+
+
+#Recommended folder stucture
+The Components,directives,pipes corresponding to any  particular module should be placed in that particular module directory
+You can move the folders by doing cut-paste
+
+./ ==> Current folder
+../ ==> Parent folder
+
+
+#We will be importing all created modules in AppModule, as AppModule is an ultimate root
+
+#Services
+In angular applications you cannot interact with the database server directly.
+But however, you can perform database interaction indirectly by using AJAX calls.
+AJAX stands for Asynchronous JavaScript And XML, which is a technique of sending HTTP request to web server and receiving HTTP response from server asynchronously,
+without refreshing the full UI of the web page.
+Services helps us to create an API server program, which mediates between the database server and your application.
+The HTTP request logic to send AJAX requests and the business logic to process the data,
+such as performing calculations or adding additional data should become reusable and independent of the components can be acheived with services.
+
+#What are services?
+Service is a class, which is a collection of properties and methods, which contains reusable programming logic, which mainly contains business logic;
+and also performs data source interaction by using AJAX technique.
+Services can be accessible from components, directives or pipes.
+And also the services are accessible from other services.
+
+Services => business logic and data access logic
+
+#4 Steps to make service works
+1)One is, create the service class.
+	The first step is, you need to create a serves class, with one or more properties and methods;
+	that contains business logic and data access logic by making HTTP request to API server to perform CRUD operations.
+2)Second one is, make ready the service for dependency injection.
+	The second step is, add @Injectable decorator, to the service class, to make it to participate in the dependency injection system of Angular.
+3)Third one is, provide the service globally or locally.
+	The third step is, you to provide the service to make it available to the components.
+	A)@Injectable({providedIn:"root"})
+		The service is accessible to all the components of the entire application among all the modules, globally.
+		It also maintains a singleton object for the service, which is commonly accessible to all the components, i.e all the components share one and only service object.
+		As a benefit of this you can store the data from one component and access the same from another component, because the service object is same for both.
+	B)providers:[Service] in AppModule meta-data
+		In this case also, it maintains the Singleton object, similar to providedIn: "root" option.
+		Only the difference is, providedIn: "root" option is available only from Angular 6 onwards.
+		For older versions of Angular that means for Angular 2, 4, 5 you have only one way of using "providers" option in AppModule.
+	C)providers:[Service] in child modules
+		In this case, the service is available only for the components of the same child module;
+		and also the "Singleton" object is maintained for the components of the same child module.
+	C)providers:[Service] in any other component's data
+		In this case, the service is available only for the component
+		and also the "Singleton" object is maintained for the component
+4)Fourth one is, inject the service into actual component.
+	The fourth and last step is, add the syntax , in the component's constructor.
+	@Inject(Service) private referenceVariable : Service
+	Here the syntax @Inject(Service), requests the angular dependency injection system, to create and return an object of service class;
+	then angular dependency injection creates a new object for the service class, if a service object is already not created in the current scope.
+	And if the object exits,the same object will be delivered to the component automatically.
+	Here the scope depends on where the service is provided.
+	#Scope of object
+	For example, if the service is added as a provider in the child module, it checks for existing service object, only with the same child module;
+	and creates a new service object, if one is not available already.
+	The keyword "private" makes the reference variable as a private member of the component class;
+	so that it can be accessible in all the methods of the same component.
+	Reference var is used to store ref of that service object,which we can used to to access the prop and methods of service
+	
+	OR
+	
+	In Angular, the @Inject(Service) is optional.
+	So you can also just write the syntax of private referenceVariable : Service.
+	It works in the same way as if @Inject.
+	Let me show how to work with the services practically.
+
+
+#Creating and adding a service
+Syntax:
+ng g service ServiceName

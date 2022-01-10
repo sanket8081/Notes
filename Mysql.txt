@@ -1,0 +1,53 @@
+https://pynative.com/python-mysql-select-query-to-fetch-data/
+
+MYsql Port : 3306
+X Protocol port : 33060
+
+To Start/Stop MYSQL server use Services app -->MySQL80 -->Start/Stop
+
+#DB Conn details
+root
+Sanket@8081
+
+
+show databases;
+create database DB_NAME;
+use DB_NAME;
+
+select sysdate() from dual;
+
+
+create table VACCINATION_DETAILS (CREATION_DATE date,STATE varchar(100),FIRST_DOSE int,SECOND_DOSE int,TOTAL_DOSES INT);
+
+desc VACCINATION_DETAILS;
+
+SELECT * FROM VACCINATION_DETAILS;
+
+SELECT creation_date,state,first_dose,second_dose,total_doses FROM VACCINATION_DETAILS where creation_date >= 
+(select max(creation_date) from VACCINATION_DETAILS) group by state order by state;
+
+SET SQL_SAFE_UPDATES = 0;
+
+delete from VACCINATION_DETAILS where creation_date =str_to_date('2021/07/29','%Y/%m/%d');
+
+
+#AWS RDS user/pwd
+admin
+Covid2021
+
+Endpoint/Hostname : covid19india.c4iygassoo3n.ap-south-1.rds.amazonaws.com
+Port : 3306
+
+show databases;
+create database covid19india;
+use covid19india;
+create table user_info(userid varchar(20),password varchar(50));
+insert into user_info values ('sanket8081','Sanket@8081');
+select * from user_info;
+desc user_info;
+
+#table_creation
+create table user_info(fname varchar(50) not null,lname varchar(50) not null,
+emailid varchar(50) not null unique,gender varchar(10) not null,state varchar(50) not null,city varchar(50) not null,
+vaccinationstatus varchar(50) not null,phonenumber int not null unique,age int not null,
+password varchar(50) not null,cpassword varchar(50) not null);

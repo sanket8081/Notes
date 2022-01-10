@@ -1,0 +1,215 @@
+Unit testing in Spring Boot
+
+What is Unit testing?
+A unit test is a way of testing a unit - the smallest piece of code that can be logically isolated in a system.
+In most programming languages,that is a function, a subroutine, a method or property. The isolated part of the definition is important.
+Tests are not unit tests when they rely on external systems: 
+Example: “If it talks to the database, it talks across the network, it touches the file system, it requires system configuration, 
+or it can't be run at the same time as any other test."
+
+
+Dependency used/required:
+
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+	</dependency>
+	
+By default added.
+Libs which are included with this are: Junit,Hamcrest and Mockito.
+Support for Assesrtion using assertJ lib is also provided. With all these support for xm and json binding is also provided.
+
+JUnit:
+
+JUnit is a unit testing framework for Java programming language. It plays a crucial role test-driven development, 
+and is a family of unit testing frameworks.JUnit promotes the idea of "first testing then coding", 
+which emphasizes on setting up the test data for a piece of code that can be tested first and then implemented. 
+This approach is like "test a little, code a little, test a little, code a little." It increases the productivity of the programmer and the stability of program code, 
+which in turn reduces the stress on the programmer and the time spent on debugging.
+
+Hamcrest:
+
+Hamcrest target is to make your tests easier to write and read. For this, it provides additional matcher classes which can be used in test for example written with JUnit. 
+Article: https://www.vogella.com/tutorials/Hamcrest/article.html
+
+
+ 
+Mocking:
+
+Mocking is a way to test the functionality of a class in isolation. Mocking does not require a database connection or properties file read or file server read to test a functionality. 
+Mock objects do the mocking of the real service. A mock object returns a dummy data corresponding to some dummy input passed to it.
+
+
+
+Mockito:
+
+Mockito facilitates creating mock objects seamlessly. It uses Java Reflection in order to create mock objects for a given interface. 
+Mock objects are nothing but proxy for actual implementations.
+Example: Consider a case of Stock Service which returns the price details of a stock. During development, the actual stock service cannot be used to get real-time data. 
+So we need a dummy implementation of the stock service.
+
+Benefits of Mockito
+	No Handwriting − No need to write mock objects on your own.
+	Refactoring Safe − Renaming interface method names or reordering parameters will not break the test code as Mocks are created at runtime.
+	Return value support − Supports return values.
+	Exception support − Supports exceptions.
+	Order check support − Supports check on order of method calls.
+	Annotation support − Supports creating mocks using annotation.
+	
+
+Testing your functions which are under Service and which are written in Repository can be tested individually i.e we can perform unit testing on them.
+But if we want to test the controller it will come under integration testing as we will be combining more than 1 units.
+
+
+Junit 5:
+
+Guide to Junit 5:
+https://junit.org/junit5/docs/current/user-guide/#writing-tests
+
+@SpringBootTest
+
+The @SpringBootTest annotation is useful when we need to bootstrap the entire container. 
+The annotation works by creating the ApplicationContext that will be utilized in our tests.
+
+Example:
+@SpringBootTest(
+  SpringBootTest.WebEnvironment.MOCK,
+  classes = Application.class)
+@AutoConfigureMockMvc
+@TestPropertySource(
+  locations = "classpath:application-integrationtest.properties")
+
+Here we're using WebEnvironment.MOCK here so that the container will operate in a mock servlet environment.
+Next, the @TestPropertySource annotation helps configure the locations of properties files specific to our tests. 
+Note that the property file loaded with @TestPropertySource will override the existing application.properties file.
+The application-integrationtest.properties contains the details to configure the persistence storage:
+
+
+
+@Test
+
+@Test is used to signal that the annotated method is a test method. 
+@Test methods must not be private or staticand must not return a value. 
+
+
+
+@Disabled
+
+@Disabled is used to signal that the annotated test class ortest method is currently disabled and should not be executed. 
+@Disabled may optionally be declared with a reason to document why the annotated test class or test method is disabled. 
+When applied at the class level, all test methods within that classare automatically disabled as well. 
+When applied at the method level, the presence of this annotation does notprevent the test class from being instantiated. 
+Rather, it prevents theexecution of the test method and method-level lifecycle callbacks such as @BeforeEach methods, 
+@AfterEach methods, and correspondingextension APIs.
+
+
+@AfterEach methods
+The method which is annotated by this annotation is executed after every @Test method.
+
+@BeforeEach methods
+The method which is annotated by this annotation is executed before every @Test method.
+
+@Order(int)
+Is used to define the order of the test functions
+
+
+@Mock
+We can use @Mock to create and inject mocked instances without having to call Mockito.mock manually.
+ 
+ Manual Way:
+	List mockList = Mockito.mock(ArrayList.class);
+    mockList.add("one");
+    Mockito.verify(mockList).add("one");
+    assertEquals(0, mockList.size());
+
+ Using @Mock annotation
+	@Mock
+	List<String> mockedList;
+	mockedList.add("one");
+    Mockito.verify(mockedList).add("one");
+    assertEquals(0, mockedList.size());
+
+@ExtendWith
+@ExtendWith is a repeatable annotation that is used to register extensions for the annotated test class or test method.
+When @ExtendWith is present on a test class, test interface, ortest method or on a parameter in a test method or lifecycle method, 
+the corresponding extensions will be registered in the order in which the @ExtendWith annotations are discovered. 
+For example, if a test classis annotated with @ExtendWith(A.class) and then with @ExtendWith(B.class), extension A will be registered beforeextension B. 
+
+
+###################################Test Driven Development using Spring##############################################
+
+TDD - very popular in sw dev community because of the gains in software quality and shorter software release cycles.
+
+# Reasons to why  we should practice TDD:
+
+1)It is still true that design happens before development usually.
+And you need to test your design before it's too settled because an
+implemented bad design choice tends to be pretty expensive to change later in the development cycle.
+
+2)Good test coverage is what I like to call executable documentation, 
+which is the best documentation you can have on a software application.
+When starting out writing automated test code for the first time, 
+the low-hanging fruit test cases are the ones where you are verifying that all the acceptance criteria have been met for a feature
+
+3)Automated tests, specifically unit tests are also very useful in helping to verify the parts before the whole.
+Example: Consider that many teams are often developing different aspects of a feature simultaneously, does a great thing 
+to be able to verify each part independently before it is integrated with other parts
+
+4)Reading and running tests, especially for code you didn't write, will help you with understanding, and the better you understand it, 
+the better position you'll be to start making safe changes
+
+5)Training for a new developer. This allows the new developer to learn what the system actually does by taking advantage of executable 
+documentation and contributing to it as well.
+
+
+# Testing Spring Service Components
+
+Usually TDD happens along with the Feature planning phase, to be specfic while writing user stories to begin planning feature development.
+We are stating with service components as it is where so of the important business logic is implemented.
+Before actually writing the test cases ask few questions to yourself first:
+1) What features/components need test coverage the most? (As not all components/features are important)
+2) What are the high priority test cases?
+3) What tyype of test is needed? Unit or Integration or Both?
+
+
+Test Plan:
+
+The time defines which test do you need (Integration/Unit) depending upon in which sw development phase you are in.
+Every component which is to be involved in integration test is already mature and settle, like they are perfect candidates for integration test.
+
+# Integration Testing: 
+This is an integration test, it involves exercising the interaction between the user management service, and the user management data access components.
+
+Setup Preview for performing integration testing with Service components:
+Intruct your Junit to do the folowing :
+
+1) Not load @Controllers
+2) Only load service and dependencies
+	Example: @datarepository and similar
+3) Connect to real data source (Test specific or other staging)
+
+
+@RunWith(SpringRunner.class)
+We have to instruct JUnit that now we are testing a Spring application. So we do that by adding the @RunWith annotation.
+As this annotation was replaced with @ExtendWith in Junit 5.But we can still use it for the sake of backward compatibility
+Example: @ExtendWith(SpringExtension.class)
+
+@SpringBootTest(webEnvironment =  WebEnvironment.NONE)
+This let the JUnit environments bootstrap all of the required Spring components.
+Now we want to Spring Boot to load only the required components which we require and ignore the rest.
+We can implement this by adding the webEnvironment attribute and we will specify what kind of web environment we want to load during our test.
+
+# Unit Testing 
+1) We will writing user management unit test code with the purpose of just testing the user management service. 
+	In particular, the addUser() method. Since we're isolating our testing to just the service component unit, 
+	we are going to mock our data access component.
+2) We do not care much about the actual behavior of a data access component, we will substitute a mock and we will be using Mockito to create a mock object.
+
+Intruct Junit to do the following:
+
+1) Not load @Controllers
+2) Load mocks for @service and its dependencies
+	Example: @date
+3) Use Mockito for our mocking framework
+4) There is no data source to configure

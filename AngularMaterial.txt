@@ -1,0 +1,13 @@
+Angular Material
+
+ng add @angular/material  - command to add angular/material
+
+The ng add command will additionally perform the following actions:
+
+	1.Add project dependencies to package.json
+	2.Add the Roboto font to your index.html
+	3.Add the Material Design icon font to your index.html
+	4.Add a few global CSS styles to:
+	5.Remove margins from body
+	6.Set height: 100% on html and body
+	7.Set Roboto as the default application font

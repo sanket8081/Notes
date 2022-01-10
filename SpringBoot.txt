@@ -1,0 +1,246 @@
+Spring intilizer:
+start.spring.io Here you can configure your proj and you will get a zip and you can extract that and can import it in STS.
+
+What does SPring intilizer give us?
+
+Pom.xml
+We got many values which we selected as group id , artifact id
+We got test dependency for free, again that comes just because we've chosen spring boot starter via spring boot web.
+with the starter web dependency we get an entire web framework and configuration from just that 
+
+In Java resources we got a java file which have a class that's annotated with at spring boot application.(@SpringBootApplication)
+This defines that this class being the route package for configuration via component scanning as well as being configurations that are defined within it.
+It also has a main method and that's how spring actually starts is by executing this main method when it builds its jar file which is ultimately what it 
+builds that jar file points to this main method.
+
+In Resources folder we have static and template folders which will have the css,image or html files.
+
+application.properties:
+
+Here you can load various configuration properties for your application that you want to be stored within 
+the application itself as supposed to be injected via environment variables.
+We also have a yaml file option instead of properties file.
+
+@SpringBootTest
+Also with default configuration we got a test package you'll see that there is a test for this and it's 
+annotated with at spring boot test. Now this test comes for free again with the initializr, you'll notice that 
+it is annotated with @SpringBootTest and that tells it to load the configuration as part of this test and it includes one test 
+and right now that test just ensures that the context itself loads so that everything is wired in.
+
+Methods in this class are annoted by @Test
+
+@EnableAutoConfiguration
+It is a powerful construct that drives much of Spring Boot.
+It is what allows for configuration classes to be dynamically scanned into the application context.
+It's based off JARs are loaded on the class path. Usually via Maven or Gradle dependency management. 
+In addition, you can control the order of auto-configuration through a couple of annotations, the @AutoConfigureBefore, and the @AutoConfigureAfter.
+
+@SpringBootApplication is a stereotype of this, it includes the @EnableAutoConfiguration as apart of it
+
+
+Conditional Loading in Spring Boot
+
+@ConditionalOnclass: Some conditional loading allows for configurations to only be loaded when and if there are classes specifically on the class path.
+@ConditionalOnBean: We can also drive configuration off the presence of a bean being defined in the application context.
+@ConditionalOnProperty: We can drive configuration based on specific properties.
+@ConditionalOnMissing: We can drive configurations based on missing bean or class or property.
+
+Additional Conditional:
+
+1)Application type based:
+You can define if it's a web application or not a web application through conditional annotations.
+
+2)Resource-based annotations:
+You can also use resource-based annotations, which essentially are files, but not always, but usually a resource is used when we're pointing to a file on the file system.
+
+3)Expression based:
+This allow you to use the spring expression language to drive conditional expectations of your class and what gets loaded during auto-configuration.
+
+
+Configuration in Spring Boot:
+
+1)application.properties file or application.yaml 
+They provide very basic configuration. 
+And in my opinion, these two locations are good, really only for development and demo purposes, because in reality,
+the types of configurations that you're going to put, into a spring application, are going to have so much variance, 
+based on the data center, or the environment that you're running it. 
+From these two yaml file gives you a little bit more control.
+
+2)Environment Variables:
+Environment variables are very common, especially for modifying the profiles that will be loaded.
+But this is a way to modify the runtime environment, to give a specific configuration properties, for that environment itself.
+These are very common and better methods for Kubernetes deployments.
+
+3)Command line arguments:
+This is a less common method than using runtime environment variables, they do offer some value when you may have two or three applications running in the same environment.
+
+4)Cloud Configurations:
+The most common way to modify properties, of a spring boot application is through cloud configurations.
+Through the use of things like config server or console, you can change the configurations for an entire 
+cloud native based application suite, instead of just a single application.
+
+5)Modifying Beans
+There's a couple of different ways to get beans loaded into the application context.
+You can rely on component scanning, or you can define those configuration classes as something to import
+You can also use XML-based configuration files(Used in legacy applications).
+
+Component Scanning: Any component or stereotype, of component, that is found in a sub package, of the package containing, 
+the default application class, for a spring boot application, will be component scanned, unless you tell it not to
+
+
+Spring Profiles:
+Profiles give you the ability to flex your configuration based on the environment that the code is deployed to. 
+Valuable in real-world, especially where you have many multi environment deployments.
+Use cases:
+When it comes to the components that you're going to consume, and profiles in spring give you the power to do that without creating multiple containers.
+Another use case is if you are running two different production domains. Consider a hot-cold scenario or a live pre-live environment.
+
+application.yaml file in a spring boot application that's going to be deployed to multiple environments, allows properties to flex by profile among other things. 
+Spring.profiles is the key value that you're going to put into your Yaml file to indicate that all of the properties below it are specific to that profile.
+
+To engage a specific profile in a spring boot application or any spring application for that matter, the key is the spring.profiles.active environment variable.
+You can also pass that as a command line value, but in the real world an environment variable is much more common
+
+EX: spring.profiles.active=dev
+
+Sample application.yaml example:
+
+spring:
+	profiles:dev
+server:
+	port:8000
+
+---
+
+spring:
+	profiles:test
+server:
+	port:9000
+
+
+
+Building Spring Boot Application:
+
+With Maven, you simply execute a Maven clean package command. 
+With Gradle, you can use simple build commands defined in the Gradle file itself.
+Spring Boot, regardless of using Gradle or Maven, comes packaged with scripts that call 
+into the build independency management system for you.
+Except for Docker, all these build systems build an executable JAR, assuming that that's your packaging type,
+or an executable WAR if that is your package type.
+Spring Boot applications are best suited as JAR files. 
+
+Advantages of JAR files:
+
+The Spring Boot JAR file itself is self-executable.
+Now, what this means is that you can use simple java-jar command to run the application without any other needs from the systems,
+other than having a JVM on your machine. 
+The JAR file itself can be deployed to some containerized frameworks to run in an unpacked form. 
+Usually wiring the JAR loader is part of the runtime of those containerized frameworks.  
+Spring Boot JAR file  have some prepended text that allows them to run on servers via init.d or systemd registrations. 
+So you can set up a simple cloud server, say an EC2 instance, and install this into systemd and it will start up when the server itself starts up
+
+Spring Boot Dependencies:
+What comes with a web starter?
+
+The dependencies that are included with spring-boot-starter-web include both spring dependencies and those from vendors like Apache
+but really Spring Boot is doing all of the management of the dependencies, including the versions to ensure that there's no version mismatch.
+One of the most popular parts of spring-boot-starter-web is the embedded Tomcat server. Embedded Tomcat can be replaced with jetty or other app servers, if you prefer
+https://codeahoy.com/java/springboot/tutorial/2019/09/01/spring-boot-replace-tomcat-with-jetty-as-the-embedded-server/
+
+JSON Marshaller is another value out of Spring Boot. With spring-boot-starter-web, you get a set of JSON Marshaller specifically from the Jackson libraries,
+to do JSON marshaling and unmarshalling. Now, obviously this is very useful for RESTful web services but that's not the only use case for JSON Marshallers in an application.
+
+We will also get some test dependencies that help you test the web services themselves to things like JSON path. 
+
+Spring Boot also includes a default logging framework . SLF4J is the chosen library, but we can bulid our own loggers
+
+Spring Boot auto configuration
+
+But in addition to the boot starters, you're going to get some core spring libraries as you might expect. 
+You're going to get spring core, spring AOP, beans, context, expressions, and those are used for those spring expression language constructs. 
+Will also get the ability to load property resources through core libraries. Also the Spring web and Spring MVC to do our web operations.
+
+SnakeYAML is what allows us to read those YAML files for application at YAML, and convert them to properties at runtime which you can actually use within your application. 
+
+Also going to get a starter test module. And this includes J unit as well as everything that you need to test a Spring Boot application. 
+
+
+Configuring Embedded Tomcat:
+If you want to add your own servlet, or your own filter, or your own listeners then there's a very simple way to do that. 
+And that's to configure the servlets, filters, and listeners as beans. Now, you can do that in one of two ways. 
+The first is to go into one of your configuration classes or create one and annotate a method with at bean that serves one of these objects. 
+The other way is to annotate the actual class file with that web servlet, at web filter, or at web listener, depending on the use, 
+and allow it to be component scanned and put into the embedded container.
+
+The Spring Boot application, at least a web enabled one, you actually have several application contexts. 
+One of which is specific to the embedded Tomcat itself. Spring Boot knows that these types of objects, servlets, filters, and listeners belong in the embedded container. 
+In addition, if you want to create a separate servlet context, you can do that using the ServletContextInitializer.
+The easiest way to configure your embedded Tomcat is through the use of properties.
+
+Many properties to deal with the embedded server:
+server.address,server.port,server.contextPath
+We also have access to the way that session is managed through cookies, time-outs, persistence of those sessions. 
+All of that can be configured through properties. The default error page, and I'm not talking about the web error page. 
+The server error page can be configured through properties as well. 
+
+
+Compression:
+Compression is another very common thing that people want to modify on a default Spring Boot application. 
+You can easily turn compression on by using the server.compression.enabled property and set its value to true. 
+By default all response types that are 2,048 bytes or more will be compressed if this property is set to true. 
+But of course, there's a property that you can use to modify that value. Also by default there's four MIME types that will be compressed if they exceed this limit. 
+Text/html, text/xml, text/plain, and text/css are the default MIME types to be compressed. 
+
+Servlet Security:
+The single most common way to change the embedded servlet container is to migrate it from a standard HTTP to a TLS (Transport Layer Security).
+
+
+
+MVC in Spring Boot:
+
+Spring Boot's web applications are based on the Spring MVC pattern. 
+Now Spring Boot provides default configurations for Spring MVC.
+The paradigm for Spring MVC is based on the Model-View-Controller design pattern. 
+And when you bring a template engine into your project you're also going to get all of the 
+view resolvers needed in order to move away from traditional JSP and into more modern template engines.
+You're also going to get some static file resolvers.
+Access to CSS and JavaScript through the static folder.
+
+HIGH Level Steps to Build a WebApp:
+Build a project
+Add in view
+Add a model
+Add a controller
+
+
+
+WebServices with Spring boot:
+
+we use RestController instead of Controller in order to not map to a view. 
+Instead, an object that has been marshaled is returned. And once again, you get JSON as the default output type for the view
+
+
+Command Line Runner Interface:
+
+CommandLineRunner is a very simple and effective tool, when you need to do some set amount of work.
+Sometimes we just want to do a body of work and we want it deployed as a task, but we want to use spring in the most efficient way possible.
+So this is where CommandLineRunner can be used.
+We can run it as a standalone spring boot application or you can run it in another spring boot application,
+say a weather application or a spring batch application, such that on startup, it will execute.
+
+It provides access to application arguments
+Runs as simple or complex set of tasks
+Can be used standalone or in application
+
+ApplicationRunner Interface:
+
+Works the same as CommandLineRunner
+They run a single-run method as part of their operations. 
+You have access to the application arguments themselves with the ApplicationRunner just like with the CommandLineRunner
+
+Ordered Operations:
+Now with spring, there's almost always a way to order behavior and CommandLineRunner or ApplicationRunners are no different.
+One thing to note is that you can put more than one of these into a given spring package. 
+And when you do that, you need to control that order and that's really where the power comes. 
+So you can use the @order annotation to determine which ones go first which ones go last by simply applying an order.
+Example: You're in bash and you pipe commands together, you're getting the same sort of structure with the CommandLineRunner and the @Order annotation.
