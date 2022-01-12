@@ -163,7 +163,7 @@ the better position you'll be to start making safe changes
 documentation and contributing to it as well.
 
 
-# Testing Spring Service Components
+# Testing Spring @Service Components
 
 Usually TDD happens along with the Feature planning phase, to be specfic while writing user stories to begin planning feature development.
 We are stating with service components as it is where so of the important business logic is implemented.
@@ -213,3 +213,50 @@ Intruct Junit to do the following:
 	Example: @date
 3) Use Mockito for our mocking framework
 4) There is no data source to configure
+
+
+
+# Testing Spring @Controller components
+
+What features/components need test coverage the most?
+What are the high priority test cases?
+What type of test is needed: uni,integration or both?
+What kinds of @Controllers are involved: MVC,RESTful or both?
+
+
+# Difference between MVC @Controller and REST @Controller?
+
+MVC returns ViewModel object(s).
+Whereas, REST returns JSON or XML
+
+# Instruct JUnit to do the following:
+
+Provide full servlet engine behavior
+Load @Controllers
+Load @Service
+Load @DataRepository
+
+
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+
+With this configuration, Spring creates a WebApplicationContext for our integration test and starts the embedded servlet container on a random ephemeral port.
+This also brings up the management server on a random port in case we expose our Actuator endpoints from a different port. 
+If we don't override management.server.port in any of our configuration files,  Spring will choose the same port for the management part as for our application.
+
+
+
+# Instruct JUnit to do the following:
+
+Mimic(mock) web browser behavior
+Load @Controllers
+Load mock(s) for @Service and beyond
+
+
+
+
+@WebMvcTest(MVCControllerClassName.class)
+
+Annotation that can be used for a Spring MVC test that focuses only onSpring MVC components. 
+Using this annotation will disable full auto-configuration and instead apply onlyconfiguration relevant to MVC tests 
+(i.e. @Controller, @ControllerAdvice, @JsonComponent, Converter/GenericConverter, Filter, WebMvcConfigurerand HandlerMethodArgumentResolver beans 
+but not @Component, @Service or @Repository beans). 

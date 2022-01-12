@@ -1,0 +1,62 @@
+# Spring Data JPA
+
+@Entitty
+Represents that the class anotated with this is an entity. The data members which we add here are reflected in the database.
+
+@Data
+ombok Data annotation ( @Data ) Generates getters for all fields, a useful toString method, and hashCode and equals 
+implementations that check all non-transient fields
+
+@NoArgsConstructor will generate a constructor with no parameters. If this is not possible (because of final fields), 
+a compiler error will result instead. 
+Unless @NoArgsConstructor(force = true) is used, then all final fields are initialized with 0 / false / null.
+
+@AllArgsConstructor generates a constructor with 1 parameter for each field in your class. 
+Fields marked with @NonNull result in null checks on those parameters.
+
+@Builder annotation produces complex builder APIs for your classes. 
+@Builder lets you automatically produce the code required to have your class be instantiable with code such as: Person.
+
+@Id defines that the field is primary key
+
+# Setting the DB intialization mechanism in Spring JPA:
+EX: spring.jpa.hibernate.ddl-auto = create
+
+# Possible values for hibernate.hbm2ddl.auto :
+validate: validate the schema, makes no changes to the database.
+update: update the schema.
+create: creates the schema, destroying previous data
+create-drop: drop the schema at the end of the session
+
+
+@Table(
+	name="test_table",
+	uniqueConstraints = @UniqueConstraint(
+		name = "emailId_unique",
+		columnNames = "email_address"
+	)
+) 
+Creates/updates new table with the mentioned name.
+
+@Column(name="test_abc") 
+Creates/updates new column with the mentioned name.
+
+#Adding sequence generator
+@SequenceGenrator(
+	name="student_seq",
+	sequenceName = "student_seq",
+	allocateSize = 1;
+	
+)
+
+@GeneratedValue(
+	strategy = GenerationType.SEQUENCE,  //AUTO,IDENTITY
+	generator = "student_seq"
+)
+
+
+# Repositories in JPA
+
+@Repository Using this the SPring will understand that the interface which we have created is a Repository
+The defined interface extends different Repositories
+Ex: public interface ABC extends JpaRepository<Student ,int>
