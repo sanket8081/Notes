@@ -5,6 +5,7 @@ git checkout -b newbranch (Used to create new branch)
 
 git init (Performed only one time)
 git add . (Pushes your files)
+git push 
 git commit -m "Intail commit"
 
 

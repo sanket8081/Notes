@@ -218,6 +218,7 @@ Intruct Junit to do the following:
 
 # Testing Spring @Controller components
 
+#Questions we need to ask ourself
 What features/components need test coverage the most?
 What are the high priority test cases?
 What type of test is needed: uni,integration or both?
@@ -252,11 +253,113 @@ Load @Controllers
 Load mock(s) for @Service and beyond
 
 
-
-
 @WebMvcTest(MVCControllerClassName.class)
 
 Annotation that can be used for a Spring MVC test that focuses only onSpring MVC components. 
 Using this annotation will disable full auto-configuration and instead apply onlyconfiguration relevant to MVC tests 
 (i.e. @Controller, @ControllerAdvice, @JsonComponent, Converter/GenericConverter, Filter, WebMvcConfigurerand HandlerMethodArgumentResolver beans 
 but not @Component, @Service or @Repository beans). 
+
+
+#Test Planning for @Repository components
+
+@Repository are the components that we write so that we can have access to a data store.
+
+What features/components need test coverage the most?
+What are the high priority test cases?
+What type of test is needed: uni,integration or both?
+What type of persistence layer: relational,graph or both?
+
+For our persistence layer testing we will only focus on integration test, we will not be doing unit test. 
+The reason for that is there's typically not much return on investment of unit testing at the data repository 
+layer of a spring application, as it is the spring framework providing a lot of what could be called the units.
+For example a lot of the actual implementation for data repository class is already done by the spring framework. 
+So unless you find yourself overwriting and customizing a lot of that, it is sufficient to plan for integration tests only.
+We will focus on simply testing the interaction between the data repository classes and the data store itself. 
+This type of testing is done to ensure things like entity mappings are fine, query semantics are fine and any custom sql statements 
+and transactional configurations work as expected.
+
+#Instruct Junit to do following:
+
+Not load @Controllers, nor @Services
+Load @repository and related dependencies
+EX: @Entity
+Load JPA testing configurations.
+
+
+@DataJpaTest
+Annotation for a JPA test that focuses only on JPA components. 
+Using this annotation will disable full auto-configuration and instead apply onlyconfiguration relevant to JPA tests. 
+By default, tests annotated with @DataJpaTest are transactional and roll backat the end of each test. 
+They also use an embedded in-memory database (replacing anyexplicit or usually auto-configured DataSource). 
+The @AutoConfigureTestDatabase annotation can be used tooverride these settings.
+SQL queries are logged by default by setting the spring.jpa.show-sql propertyto true. 
+This can be disabled using the showSqlattribute. 
+If you are looking to load your full application configuration, but use an embeddeddatabase, 
+you should consider @SpringBootTest combined with @AutoConfigureTestDatabase rather than thisannotation. 
+
+
+@AutoConfigureDataJpa
+Imports all configuration needed for JPA testing.
+
+@AutoConfigureTestDatabase(replace=Replace.NONE)
+use an embedded test database or specify another database - external or staging- for your test needs.
+Annotation that can be applied to a test class to configure a test database to useinstead of the application-defined or auto-configured DataSource. 
+In the caseof multiple DataSource beans, only the @Primary DataSource is considered.
+
+@AutoConfigureTestEntityManager
+Allowed us to have direct access to the EntityManager
+
+@Transactional 
+Allowed us to have rollback behavior after test executions
+
+We got a transactional annotation as a result of using that one shorthand DataJpaTest annotation. 
+That meant we got rollback behavior. So we were able to expect the database to be in a certain state when the test began, 
+and also know exactly what that state was when a test ended. This means our tests are repeatable. Now when testing out the data access layer, 
+repeatability can definitely be tricky. We want to make sure we begin and end a test with the database in a known state.
+
+# TestEntityManager
+Alternative to EntityManager for use in JPA tests. Provides a subset of EntityManager methods 
+that are useful for tests as well as helper methods forcommon testing tasks such as persist/flush/find.
+
+
+
+#Creating integration test datasets:
+
+#DBUnit
+DBUnit is a JUnit extension that helps developers manage the nontrivial task of keeping the data store in a known state before and after testing.
+
+#Instruct Junit to do following:
+Not load @Controllers, nor @Services
+Load @repository and related dependencies
+EX: @Entity
+Load JPA testing configurations.
+Load DBUnit testing configuration and dataset in XML.
+
+
+
+#Test Suites
+We are able to combine several test cases to run as a grouping. This is also known as a test suite. 
+Test suites are very useful to achieve a much broader testing objective. Some examples of test suites are, 
+smoke tests, these are the kind of tests that you might want to have in place just to give you a good indication of basic system health. 
+There's also a notion of iteration test suites. If your project is planned in iterations you may want to group the test cases 
+for any of the work that's happening within an iteration. There's also something called a feature test
+
+@Suite marks a class as a test suite on the JUnit Platform. 
+
+@SelectClasses specifies the classes to select when runninga test suite on the JUnit Platform.
+
+
+
+# Continuos integration test suite
+
+#Continuos Integration:
+A dev team practice wheryby checked-in code is constantly built integrated and verified.
+This typically means that there's a continuous integration server involved in the automated build and deployment processes. 
+A single smoke test, or a smoke test suite, is a good thing to incorporate into the cycle of your continuous integration server. 
+This is the kind of test that is run after every check-in. There could also be another kind of test that is run whenever a full deployment is about to occur. 
+
+
+#Smoke Test Suites
+
+Ex: Check DB health
