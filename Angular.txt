@@ -393,6 +393,16 @@ and also performs data source interaction by using AJAX technique.
 Services can be accessible from components, directives or pipes.
 And also the services are accessible from other services.
 
+Services does not contain even handler methods.
+That means service won't respond directly for the user actions, such as clicking the button.
+When the user clicks on a button or perform any user action an event handler in the component will execute;
+and that component can call the service to make database interaction.
+
+#Goals of services:
+Separation of business logic and the data access logic from components;
+and also make the components contain the code for only supplying the data to template and respond to the user actions, 
+such as "click" and also call the necessary services.
+
 Services => business logic and data access logic
 
 #4 Steps to make service works
@@ -442,3 +452,30 @@ Services => business logic and data access logic
 #Creating and adding a service
 Syntax:
 ng g service ServiceName
+
+
+#RxJS Observable and Observer
+
+Observable and Observer is a pattern of message passing from publisher to subscriber
+
+Flow of Functionality:
+	Observable(Publisher) is created.
+	Observer subscribes to the Observable.
+	Observable can pass message(notification) to Observer.
+	Each time when Observable passes a notification, it is recieved by Observer.
+
+#The observables execute only when at least there is one subscriber.There is an observable object.
+It won't execute until the observer is created for that.
+
+#Examples:
+	One is, while receiving the response from AJAX and other one while performing some large tasks such as uploading the files.
+	Converting the content into PDF format etc.
+	
+#AJAX
+Ajax stands for asynchronous javascript and xml, which is a technique of sending http request to a web server and receiving http response asynchronously
+without refreshing the full ui of the web page, that means you have to create a api server program which mediates between database server and your application.
+
+
+#Creating class in Angular:
+
+ng g class class_name

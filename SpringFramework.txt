@@ -1,3 +1,27 @@
+
+#Why Spring?
+Spring is a very popular framework for building enterprise Java applications.
+When Spring first came out, it was initially a simpler, lightweight alternative to J2EE.
+They basically give you a large number of helper classes to make enterprise development easier.
+
+
+#Goals of Spring
+1)Lightweight development with Java POJOs, and POJOs mean Plain Old Java Objects, make it much simpler to build, as compared to the heavyweight EJBs
+from the early versions of J2EE.
+2)We want to promote loose coupling by making use of dependency injection.
+So instead of hard wiring your objects together,you simply specify the wiring via a configuration file or annotations
+3)Declarative programming
+with Aspect Oriented Programming, or AOP. This'll basically allow you to add some application wide services to your given objects.
+4)Minimize boilerplate Java code.
+So in the early days of J2EE, there was a lot of code that you had to write, and so the folks at Spring, they created a collection of helper classes
+to make it easier, and again, to minimize all of the boilerplate code,
+
+
+
+
+
+ 
+
 #Inversion of Control
 
 It's simply the design process
