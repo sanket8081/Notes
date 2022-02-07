@@ -61,3 +61,61 @@ Answer:
 When we pass the interface to the method, behind the scenes Spring will cast the object for you.
 context.getBean("myCoach", Coach.class)  
 However, there are some slight differences than normal casting.
+
+
+
+#Dependency Injection
+
+Dependency Injection is a fundamental aspect of the Spring framework, through which the Spring container “injects” objects into other objects or “dependencies”.
+This allows for loose coupling of components and moves the responsibility of managing components onto the container.
+
+
+Considering car factory as an example.
+
+So, you don't have to actually build the car. The car's already built for you at the factory. So, they actually inject all of the dependencies for the car.
+So they inject the engine, they inject the tires, the seats and so on. So that's basically what you have here with dependency injection.
+So you simply outsource the construction and injection of your object to an external entity. In this case, that's the car factory.
+
+Spring Container Primary functions:
+
+1.Create and manage Objects. (Inversion of Control)
+2.Inject Object's dependencies. (Dependency Injection)
+
+Ex: As seen in previous implementation , Our coach provides daily workouts.
+	Now, it will provide daily fortunes. This will be new helper named as FortuneService.
+	This is dependency. and now we will inject this dependency in our Coach.
+
+Two Main Injection Types:
+1. Constructor Injection
+2. Setter Injection
+
+#Constructor Injection
+# Process for Constructor Injection:
+	1.Define the dependency interface and class.
+	2.Creates a constructor in your class for injection.
+	3.Configure the dependency injection in Spring config file.
+	
+Here, we use <constructor-arg ref="myFortune"/> for dependency injections.
+	
+FAQ: What is the purpose for the no arg constructor?
+	 When you don’t define any constructor in your class, compiler defines default one for you, however when you declare any constructor 
+	 (in your example you have already defined a parameterized constructor), compiler doesn’t do it for you.
+	 Since you have defined a constructor in class code, compiler didn’t create default one. While creating object you are invoking default one, 
+	 which doesn’t exist in class code. Then the code gives an compilation error.
+	 
+
+#Setter Injection
+#Process for Setter Injection:
+	1.Create setter methods in your class for injections.
+	2.Configure the dependency injection in Spring Config file.
+	
+#Injecting Literal Values
+#Process for Literal Injection
+	1.Create setter methods in your class for injections.
+	2.Configure the dependency injection in Spring Config file.
+	
+#Injecting values from a Propertirs file:
+#Process for Injecting values from aproperties file:
+	1.Create properties file.
+	2.Load properties file in Spring config file.
+	3.Reference values from Properties file.

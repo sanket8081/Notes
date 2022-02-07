@@ -38,6 +38,6 @@ git push -u origin main
 
 Push an existing repository from command line
 
-git remote add origin https://github.com/sanket8081/GymAppBackEnd.git
+git remote add origin https://github.com/sanket8081/GymAppFronEnd.git
 git branch -M main
 git push -u origin main
