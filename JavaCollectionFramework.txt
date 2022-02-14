@@ -1,0 +1,11 @@
+Java Collection Framework'
+
+
+Limitations of array
+1.Arrays can hold fixed number of elements
+2.Arrays can store only homogeneous data elements
+3.Ready made API's support is not available in array
+
+
+Collections are dynamic in nature i.e they can grow or shrink as per the requirement.
+They are not fixed in size
