@@ -17,11 +17,6 @@ So in the early days of J2EE, there was a lot of code that you had to write, and
 to make it easier, and again, to minimize all of the boilerplate code,
 
 
-
-
-
- 
-
 #Inversion of Control
 
 It's simply the design process
@@ -119,3 +114,292 @@ FAQ: What is the purpose for the no arg constructor?
 	1.Create properties file.
 	2.Load properties file in Spring config file.
 	3.Reference values from Properties file.
+	
+	
+	
+
+
+#How Bean scopes are defined?
+Scope refers to a lifecycle of a bean, how long does the bean live?
+How many instances are created?
+How bean is shared?
+
+Default scope is Singleton
+
+Bean Example:
+<bean id="myFortune" 
+    	class="com.sanket8081.UdemySpringDemo.HppyFortuneServide">
+</bean>
+
+Types of Bean Scope:
+
+Singleton  --> Allocates same memory for every reference
+Prototype  --> Allocates different memory for every reference
+
+
+Bean Lifecycle methods:
+Refer Notebook for Diagram
+
+Bean Lifecycle Methods/Hooks:
+1. You can add custom code during bean initialization
+	Calling custom business logic methods
+	Setting up handles to resources(db,sockets,files)
+2. You can add custom code during bean destruction
+	Calling custom business logic method
+	Cleanup up handles to resources(db,sockets,files)
+
+	
+Bean Init Example:
+<bean id="myFortune" 
+    	class="com.sanket8081.UdemySpringDemo.HppyFortuneServide"
+		init-method="doMyStartUpStuff">
+</bean>
+
+Bean Destroy Example:
+<bean id="myFortune" 
+    	class="com.sanket8081.UdemySpringDemo.HppyFortuneServide"
+		destroy-method="doMyStartUpStuff">
+</bean>
+
+
+#Development Process
+1.Define your method init and destroy.
+2. Configure thier names in Spring config file
+
+
+
+#Note:
+
+For "prototype" scoped beans, Spring does not call the destroy method.  Gasp!  
+
+In contrast to the other scopes, Spring does not manage the complete lifecycle of a prototype bean: 
+the container instantiates, configures, and otherwise assembles a prototype object, and hands it to the client, 
+with no further record of that prototype instance.
+
+Thus, although initialization lifecycle callback methods are called on all objects regardless of scope, 
+in the case of prototypes, configured destruction lifecycle callbacks are not called. The client code must 
+clean up prototype-scoped objects and release expensive resources that the prototype bean(s) are holding. 
+
+
+#Java Annotations
+Example: @Override  -> It tells compiler that er are overriding a method exactly listed in an interface or a parent class.
+Gives compilation error we are not overriding the method correctly.
+
+#Why Spring configuration with Annotations?
+XML configuration can be verbose if we have huge number of beans, in that case you have to mention all of them in the XML configurations.
+Cnfigure your Spring beans with Annotations, this minimizes the XML configuration.
+
+
+#Scanning for Component Classes:
+Spring will scan your Java classes for special annotations.
+It will automatically register the beans in the Spring container.
+
+#Development process for configuring Java Annotations:
+1. Enable component scanning in Spring config file.
+
+Example: 
+<beans  .. >
+	<context:component-scan base-package="com.sanket8081.demo"/>
+</beans>
+Spring will scan this packages recursively.
+
+
+2. Add the @Component Annotation to your Java Class.
+@Component("testCoach")
+public class xyz ..
+
+3. Retrive bean from Spring Container.
+Coach theCoach = context.getBean("testCoach",Coach.class);
+
+
+
+#Spring Dependency Injection with Annotation and autowiring
+
+#Spring Autowoiring
+For DI, Spring can use Autowiring
+Spring will look for a class that mathches the property (Matches by type: class or interface)
+Spring will inject it automatically, hence it is autowired.
+
+#Autowiring example:
+ Injecting FortuneService into a Coach implementation.
+ Spring will scan all @Components
+ Anyone implements the FortuneService interface?
+ If so, let's inject them. For example: HappyFortuneService
+ 
+#Autowiring Injection Types:
+	Constructor Injection
+	Setter Injection
+	Field Injection
+ 
+1) Constructor Injection
+
+Injecting dependencies by calling contructor on your class.
+
+
+#Development process - Constructor Injection
+1.Define the dependency interface and class.
+2.Create a constructor in your class for injections.
+3.Configure the dependency injection with @Autowired annotation.
+
+
+#What if we have multiple FortuneService implementation?
+Spring has special support to handle this case using @Qualifier annotation.
+
+
+#Commenting @Autowired still works!!
+	//@Autowired
+    public TennisCoach(FortuneService theFortuneService) {
+        System.out.println(" theFortuneService " + theFortuneService);
+        fortuneService = theFortuneService;
+    }
+	
+As of Spring Framework 4.3, an @Autowired annotation on such a constructor is no longer necessary 
+if the target bean only defines one constructor to begin with. However, if several constructors are available, 
+at least one must be annotated to teach the container which one to use.
+I personally prefer to use the @Autowired annotation because it makes the code more readable. 
+But as mentioned, the @Autowired is not required for this scenario.
+
+
+2) Setter Injection
+Injecting dependencies by calling setter methods on your class.
+
+#Autowiring example:
+ Injecting FortuneService into a Coach implementation.
+ Spring will scan all @Components
+ Anyone implements the FortuneService interface?
+ If so, let's inject them. For example: HappyFortuneService
+ 
+
+#Development process - Setter Injection
+1.Define the dependency interface and class.
+2.Create a setter methods in your class for injections.
+3.Configure the dependency injection with @Autowired annotation.
+
+#How @Autowired works?
+So basically when Spring sees this @Autowired,
+it'll say hey I need to resolve a dependency,
+I need to inject a dependency, and they'll look
+for any class of implements FortuneService.
+
+
+3) Method Injection
+Injecting dependencies by calling class methods of your class.
+
+@Autowired
+public void doSomeCrazyStuff(Coach theCoachService)
+{
+	System.out.println("Implementing injection using class method");
+	coachService = theCoachService;
+}
+
+
+4) Field Injection
+Injecting dependencies by setting field values on your class directly. (Even private fields)
+Accomplished by using Java reflection.
+
+#Development process - Field Injection
+1.Configure the dependency injection with Autowired annotation.
+Applied directly to the field.
+No need of setter methods.
+
+
+##Which Injection type should we use?
+No good or bad between these injection types, just choose your type use the same throughout your project.
+
+
+#Qualifiers for DI
+
+If we have multiple service implementations, so how does Spring know which one we need to pick?
+
+Spring will throw an exception "NoUniqueBeanDefinationException"
+No qualifying bean of type [Interface] is defined:
+expected single matching bean but found 4:
+A,B,C,D
+
+To resolve this we need to tell spring which bean to use.
+Use below annotation to specify which exact bean does Spring need to use.
+
+Example:
+@Autowired
+@Qualifier("Bean_Id")   // name mentioned in the @Component("ABC") or the class name in lower case (happyFortuneService)
+private FortuneService fortuneService;
+
+We can apply @Qualifier for all the Injection types.
+
+
+
+#Annotations - Default Bean Names
+In general, when using Annotations, for the default bean name, Spring uses the following rule.
+If the annotation's value doesn't indicate a bean name, an appropriate name will be built based on the short 
+name of the class (with the first letter lower-cased).
+For example:
+HappyFortuneService --> happyFortuneService
+
+
+#Deault Bean names: Special Case
+However, for the special case of when BOTH the first and second characters of the class name are upper case, 
+then the name is NOT converted.
+For the case of RESTFortuneService
+RESTFortuneService --> RESTFortuneService
+No conversion since the first two characters are upper case.
+Behind the scenes, Spring uses the Java Beans Introspector to generate the default bean name.
+
+
+#Using @Qualifier  with Constructor Injection
+You have to place the @Qualifier annotation inside of the constructor arguments. 
+Example:
+
+@Autowired
+public TennisCoach(@Qualifier("randomFortuneService") FortuneService theFortuneService) {
+
+	System.out.println(">> TennisCoach: inside constructor using @autowired and @qualifier");
+	
+	fortuneService = theFortuneService;
+}
+
+
+#Using @Qualifier with Setter Injection
+
+@Autowired
+@Qualifier("randomFortuneService")
+public void setFortuneService(FortuneService theFortuneService) {
+	System.out.println(">> TennisCoach: inside setFortuneService() method");
+	this.fortuneService = theFortuneService;
+}
+
+or
+
+@Autowired
+public void setFortuneService(@Qualifier("randomFortuneService") FortuneService theFortuneService) {
+	System.out.println(">> TennisCoach: inside setFortuneService() method");
+	this.fortuneService = theFortuneService;
+}
+
+
+
+#How to inject properties file using Java annotations
+
+This solution will show you how inject values from a properties file using annotatons. 
+The values will no longer be hard coded in the Java code.
+
+1. Create a properties file to hold your properties. It will be a name value pair.  
+New text file:  src/sport.properties
+	foo.email=myeasycoach@luv2code.com
+	foo.team=Silly Java Coders
+	
+Note the location of the properties file is very important. 
+It must be stored in src/sport.properties
+
+2. Load the properties file in the XML config file.
+File: applicationContext.xml
+
+Add the following lines:
+    <context:property-placeholder location="classpath:sport.properties"/>  
+This should appear just after the <context:component-scan .../> line
+
+3. Inject the properties values into your Swim Coach: SwimCoach.java
+	@Value("${foo.email}")
+	private String email;
+		
+	@Value("${foo.team}")
+	private String team;
