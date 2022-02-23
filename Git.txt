@@ -140,7 +140,7 @@ git add . (Will add all the changes to Staging index from the working directory)
 git reset HEAD <File Name>
 
 #Commit
-git commit -m "Intial commit"  ( Will commit the staged chnages to repository )
+git commit -m "Intial commit"  ( Will commit the staged changes to repository )
 
 O/P of the above cmd gives you the shot version of the SHA value. And if we check the logs we will see that the HEAD would have point to the latest commit.
 
@@ -155,7 +155,7 @@ git diff
 - indicates that this line has changed
 + indicates that this line has been added
 
-#By default, git diff comapres the chnages between the working directory and the staging tree.
+#By default, git diff comapres the changes between the working directory and the staging tree.
 To view difference betwwen the repository and the statging tree use below command:
 
 git diff --staged
@@ -215,6 +215,81 @@ git diff SHA_1..HEAD
 
 
 
+#Make Atomic commits
+Group things together which are related and relevant to each other and commit them accordingly.
+
+Small commits
+Only affect a single aspect
+Easier to understand, to work with, and to find bugs
+Improves collaboration
+
+
+
+#Undo Changes
+
+1. Undo changes in the working directory
+
+If you editied some file in your working directory and then close it, now you cannot unod the changes. 
+So here git helps us to recover those as it keeps tracking our files
+
+git status     // this will give the status of your working directory
+git checkout -- index.html
+git status    // this will confirm you that the changes you made were discarded.
+
+
+2. Undo the changes made to our staging tree
+
+Unstage the changes that were staged. ( Undoing the changes made in staging index by git add .. command)
+
+git reset HEAD <file>   // This will unstage the file/files from the staging index.
+
+
+3. Amending the commit
+Amending means merging changes to latest commit without making any new commit.
+Git only allows us to make changes in the lastest commit as 
+rest all previous commits are linked to each other and are referred as parent of some other commit.
+Git mantains the data integrity without breaking the chain of old commits.
+The latest commit is the only one whoes SHA value is not stored to any other commit.
+
+git commit --amend -m "Latest commit chnaged"
+
+Doing this it will bring back the old commit to the staging , add the changes and then recommit that.
+
+
+4. Retrive old versions:
+
+Git only allows amenfing the most recent commit.
+Edits which undo changes should be new commits
+This may be helpful to retrieve the an old version  of a file.
+
+Steps to follow:
+
+git show SHA_VALUE  // this will give you the details about the commit
+
+git checkout PREV_SHA_VALUE -- file_name    // -- represents the current branch, This will give you the file 
+												  with older version in your staging as well as your working directory 
+												  before the commit.
+
+
+
+5. Revert a commit
+
+This will not edit the commit, it will make the new commit the the changes reverted
+git revert SHA_VALUE
+
+
+6. Remove untracked files
+
+Some times file get added which we don't want to add ex: log file, compiled code, class files.
+This will remove only files which are untracked, not in staging directory or repository
+This can be achieved by git clean command. (-n does the dry run and -f forces the command and executes the clean operation)
+
+git clean -n  //gives list of files which will be removed
+git clean -f  // This will remove the untracked files
+
+git reset HEAD junk1.txt    // This will move it from staging directory to working directory
+
+git clean -n/-f
 
 *****************************************************************************************************
 
