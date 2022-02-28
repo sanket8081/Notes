@@ -403,3 +403,80 @@ This should appear just after the <context:component-scan .../> line
 		
 	@Value("${foo.team}")
 	private String team;
+
+
+
+
+
+#Bean Scopes and Lifecycle methods
+Scope refers to the lifecycle of bean.
+How long does the bean live?
+How many instnces are created?
+How is the bean shared?
+
+#We can explicitly specify the bean scope using @Scope annotation
+@Component
+@Scope("Singleton")
+public class TennisCoach implements Coach{
+
+}
+
+
+Different types of scope:
+1.Singleton: Same object for each request
+2.Prototype: New object for each request, basically it creates new instance every time
+
+
+#Bean LifeCycle methods/Hooks:
+
+You can add custome code during bean intialization
+	Calling custom business logic methods.
+	Setting up handles to resources (db,sockets,files,etc)
+	
+You can add custome code during bean destruction
+	Calling custom business logic methods.
+	Cleaning up handles to resources (db,sockets,files,etc)
+
+#Development process:
+1.Define your methods for init and destroy
+2.Add annotations @PostConstruct and @PreDestroy
+
+@PostConstruct: The code will execute after the constructor and after injection of dependencies
+@PreDestroy: The code will execute before bean is destroyed.
+
+Access modifier:
+The method can have any access modifier (public, protected, private)
+
+Return type:
+The method can have any return type. However, "void' is most commonly used. If you give a return type just note that you will not be able to capture the return value. As a result, "void" is commonly used.
+
+Method name:
+The method can have any method name.
+
+Arguments:
+The method can not accept any arguments. The method should be no-arg.
+
+# Note:
+If you are using Java 9 or higher, then you will encounter an error when using @PostConstruct and @PreDestroy in your code. 
+When using Java 9 and higher, javax.annotation has been removed from its default classpath.
+That's why we Eclipse can't find it.
+
+
+#Java Configurations Without XML:
+
+//Defining the Configuration Class
+@Configuration()   // This defines a class as a configuration class
+@ComponentScan("package-name")  //This defines the package under which all classes are mapped in Spring container.
+
+//Reading Spring Java Configuration Class:
+AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigClassName.class);
+
+//Retrive a bean from Spring ContainerCoach theCoach = context.getBean("tennisCoach",Coach.class);
+#Defining beans with Java Code@BeanThis will expose the bean to the Spring Container, no component scan is used to map the beans in the Spring Container.
+
+
+
+	
+
+	
+
